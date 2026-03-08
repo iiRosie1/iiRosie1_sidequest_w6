@@ -18,13 +18,24 @@
 export class SoundManager {
   constructor() {
     this.sfx = {};
+    this.bgm = null;
   }
 
   load(name, path) {
     this.sfx[name] = loadSound(path);
   }
 
+  loadBGM(path) {
+    this.bgm = loadSound(path);
+  }
+
   play(name) {
     this.sfx[name]?.play();
+  }
+
+  playBGM() {
+    if (this.bgm && !this.bgm.isPlaying()) {
+      this.bgm.loop();
+    }
   }
 }

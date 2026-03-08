@@ -65,6 +65,7 @@ function unlockAudioOnce() {
   if (audioUnlocked) return;
   audioUnlocked = true;
   if (typeof userStartAudio === "function") userStartAudio();
+  soundManager?.playBGM();
 }
 
 // Prevent the browser from stealing keys (space/arrows) for scrolling.
@@ -129,6 +130,12 @@ async function boot() {
   // --- Audio registry ---
   // (AudioContext may still be locked until the user clicks/presses a key.)
   soundManager = new SoundManager();
+  soundManager.loadBGM("assets/time_for_adventure.mp3");
+  soundManager.load("tap", "assets/tap.wav");
+  soundManager.load("explosion", "assets/explosion.wav");
+  soundManager.load("jump", "assets/jump.wav");
+  soundManager.load("hurt", "assets/hurt.wav");
+  soundManager.load("coin", "assets/coin.wav");
 
   // --- Parallax layer defs (VIEW) ---
   const defs = levelPkg.level?.view?.parallax ?? [];

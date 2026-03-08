@@ -258,8 +258,9 @@ export class Level {
     // leaf collect
     p.overlaps(this.leaf, (playerSprite, leafSprite) => this._rescueLeaf(playerSprite, leafSprite));
 
-    // fire damage
+    // fire damage (slime hazard)
     p.overlaps(this.fire, (playerSprite, fireSprite) => {
+      this.events?.emit("fire:touched");
       this.playerCtrl.damageFromX(fireSprite.x);
     });
   }
