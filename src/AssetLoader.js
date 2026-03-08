@@ -20,10 +20,34 @@ export async function loadAssets(levelPkg, tuningDoc) {
   // IMPORTANT:
   // loadImage() is "preload-safe" only if p5 is actually tracking it inside preload().
   // To make this robust even if your boot flow uses async/await, we wrap loadImage in a Promise.
-  const playerImg = await loadImageAsync("assets/foxSpriteSheet.png");
-  const boarImg = await loadImageAsync("assets/boarSpriteSheet.png");
-  const leafImg = await loadImageAsync("assets/leafSpriteSheet.png");
-  const fireImg = await loadImageAsync("assets/fireSpriteSheet.png");
+  // Pink_Monster: build sprite sheet from separate strips (idle, run, jump, etc.)
+  const monsterBase = "assets/monster/";
+  const idleImg = await loadImageAsync(monsterBase + "Pink_Monster_Idle_4.png");
+  const runImg = await loadImageAsync(monsterBase + "Pink_Monster_Run_6.png");
+  const jumpImg = await loadImageAsync(monsterBase + "Pink_Monster_Jump_8.png");
+  const attackImg = await loadImageAsync(monsterBase + "Pink_Monster_Attack1_4.png");
+  const hurtImg = await loadImageAsync(monsterBase + "Pink_Monster_Hurt_4.png");
+  const deathImg = await loadImageAsync(monsterBase + "Pink_Monster_Death_8.png");
+  const playerImg = buildPinkMonsterSpriteSheet({
+    idleImg,
+    runImg,
+    jumpImg,
+    attackImg,
+    hurtImg,
+    deathImg,
+  });
+  // Dude_Monster: build sprite sheet for boar (run, throwPose, death)
+  const dudeBase = "assets/3 Dude_Monster/";
+  const dudeRunImg = await loadImageAsync(dudeBase + "Dude_Monster_Run_6.png");
+  const dudeThrowImg = await loadImageAsync(dudeBase + "Dude_Monster_Throw_4.png");
+  const dudeDeathImg = await loadImageAsync(dudeBase + "Dude_Monster_Death_8.png");
+  const boarImg = buildDudeMonsterBoarSheet({
+    runImg: dudeRunImg,
+    throwImg: dudeThrowImg,
+    deathImg: dudeDeathImg,
+  });
+  const leafImg = await loadImageAsync("assets/2 Owlet_Monster/Owlet_Monster_Idle_4.png");
+  const fireImg = await loadImageAsync("assets/slime_purple.png");
 
   const groundTileImg = await loadImageAsync("assets/groundTile.png");
   const groundTileDeepImg = await loadImageAsync("assets/groundTileDeep.png");
@@ -40,13 +64,12 @@ export async function loadAssets(levelPkg, tuningDoc) {
   const backgrounds = await loadBackgrounds(levelPkg);
 
   // ---- anis ----
-  // Prefer tuning-driven animations if present, else fallback to monolith defaults.
-  // ALSO: inject a spriteSheet reference by default so addAnis never tries to load "undefined".
-  let playerAnis = buildAnis(tuningDoc?.player?.animations, defaultPlayerAnis(), {
+  // Pink_Monster: row/frames match the built sprite sheet
+  let playerAnis = buildAnis(tuningDoc?.player?.animations, defaultPinkMonsterPlayerAnis(), {
     spriteSheet: playerImg,
   });
 
-  let boarAnis = buildAnis(tuningDoc?.boar?.animations, defaultBoarAnis(), {
+  let boarAnis = buildAnis(tuningDoc?.boar?.animations, defaultDudeMonsterBoarAnis(), {
     spriteSheet: boarImg,
   });
 
@@ -141,12 +164,80 @@ function defaultPlayerAnis() {
   };
 }
 
+// Pink_Monster: row/frames match the built sprite sheet (Idle 4, Run 6, Jump 8, Attack 4, Hurt 4, Death 8)
+function defaultPinkMonsterPlayerAnis() {
+  return {
+    idle: { row: 0, frames: 4, frameDelay: 10 },
+    run: { row: 1, frames: 6, frameDelay: 3 },
+    jump: { row: 2, frames: 8, frameDelay: Infinity, frame: 0 },
+    attack: { row: 3, frames: 4, frameDelay: 2 },
+    hurtPose: { row: 4, frames: 4, frameDelay: Infinity },
+    death: { row: 5, frames: 8, frameDelay: 16 },
+  };
+}
+
+/**
+ * Build sprite sheet from Pink_Monster strips. Layout:
+ * Row 0: idle (4) | 1: run (6) | 2: jump (8) | 3: attack (4) | 4: hurt (4) | 5: death (8)
+ */
+function buildPinkMonsterSpriteSheet(imgs) {
+  const FW = 32;
+  const FH = 32;
+  const COLS = 8;
+  const ROWS = 6;
+  const pg = createGraphics(FW * COLS, FH * ROWS);
+  pg.noSmooth();
+  pg.drawingContext.imageSmoothingEnabled = false;
+
+  const drawStrip = (img, row, frameCount) => {
+    pg.image(img, 0, row * FH, FW * frameCount, FH);
+  };
+
+  drawStrip(imgs.idleImg, 0, 4);
+  drawStrip(imgs.runImg, 1, 6);
+  drawStrip(imgs.jumpImg, 2, 8);
+  drawStrip(imgs.attackImg, 3, 4);
+  drawStrip(imgs.hurtImg, 4, 4);
+  drawStrip(imgs.deathImg, 5, 8);
+
+  return pg.get();
+}
+
 function defaultBoarAnis() {
   return {
     run: { row: 1, frames: 4, frameDelay: 3 },
     throwPose: { row: 4, frames: 1, frameDelay: Infinity, frame: 0 },
     death: { row: 5, frames: 4, frameDelay: 16 },
   };
+}
+
+// Dude_Monster: boar sprite sheet layout (run 6, throwPose 1, death 8)
+function defaultDudeMonsterBoarAnis() {
+  return {
+    run: { row: 0, frames: 6, frameDelay: 3 },
+    throwPose: { row: 1, frames: 1, frameDelay: Infinity, frame: 0 },
+    death: { row: 2, frames: 8, frameDelay: 16 },
+  };
+}
+
+function buildDudeMonsterBoarSheet(imgs) {
+  const FW = 32;
+  const FH = 32;
+  const COLS = 8;
+  const ROWS = 3;
+  const pg = createGraphics(FW * COLS, FH * ROWS);
+  pg.noSmooth();
+  pg.drawingContext.imageSmoothingEnabled = false;
+
+  const drawStrip = (img, row, frameCount) => {
+    pg.image(img, 0, row * FH, FW * frameCount, FH);
+  };
+
+  drawStrip(imgs.runImg, 0, 6);
+  drawStrip(imgs.throwImg, 1, 4);
+  drawStrip(imgs.deathImg, 2, 8);
+
+  return pg.get();
 }
 
 // ------------------------

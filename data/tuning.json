@@ -40,36 +40,39 @@
 
     "anims": {
       "idle": {
-        "row": 0,
+        "img": "assets/monster/Pink_Monster_Idle_4.png",
         "frames": 4,
         "frameDelay": 10
       },
+
       "run": {
-        "row": 1,
-        "frames": 4,
+        "img": "assets/monster/Pink_Monster_Run_6.png",
+        "frames": 6,
+        "frameDelay": 4
+      },
+
+      "jump": {
+        "img": "assets/monster/Pink_Monster_Jump_8.png",
+        "frames": 8,
+        "hold": true
+      },
+
+      "attack": {
+        "img": "assets/monster/Pink_Monster_Attack_6.png",
+        "frames": 6,
         "frameDelay": 3
       },
-      "jump": {
-        "row": 2,
-        "frames": 3,
-        "hold": true,
-        "frame": 0
-      },
-      "attack": {
-        "row": 3,
-        "frames": 6,
-        "frameDelay": 2
-      },
+
       "hurtPose": {
-        "row": 5,
-        "frames": 4,
-        "hold": true,
-        "frame": 1
+        "img": "assets/monster/Pink_Monster_Hurt_2.png",
+        "frames": 2,
+        "hold": true
       },
+
       "death": {
-        "row": 5,
-        "frames": 4,
-        "frameDelay": 16
+        "img": "assets/monster/Pink_Monster_Death_6.png",
+        "frames": 6,
+        "frameDelay": 12
       }
     }
   },

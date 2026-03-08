@@ -55,7 +55,7 @@ export function buildTilesAndGroups(level) {
   level.leaf = new Group();
   level.leaf.physics = "static";
   level.leaf.spriteSheet = level.assets.leafImg;
-  level.leaf.addAnis({ idle: { w: 32, h: 32, row: 0, frames: 5 } });
+  level.leaf.addAnis({ idle: { w: 32, h: 32, row: 0, frames: 4 } });
   level.leaf.w = 10;
   level.leaf.h = 6;
   level.leaf.anis.offset.x = 2;
@@ -66,9 +66,9 @@ export function buildTilesAndGroups(level) {
   level.fire = new Group();
   level.fire.physics = "static";
   level.fire.spriteSheet = level.assets.fireImg;
-  level.fire.addAnis({ burn: { w: 32, h: 32, row: 0, frames: 16 } });
-  level.fire.w = 18;
-  level.fire.h = 16;
+  level.fire.addAnis({ burn: { w: 24, h: 24, row: 0, frames: 4 } });
+  level.fire.w = 14;
+  level.fire.h = 14;
   level.fire.tile = "f";
 
   // --- ground tile (g) ---
@@ -135,6 +135,9 @@ export function buildTilesAndGroups(level) {
     s.sensor = true;
   }
 
-  // leaves overlap-only (boars pass through)
-  for (const s of level.leaf) s.removeColliders();
+  // leaves overlap-only (boars pass through), scale down visually
+  for (const s of level.leaf) {
+    s.removeColliders();
+    s.scale = 0.35;
+  }
 }
