@@ -285,9 +285,9 @@ async function loadBackgrounds(levelPkg) {
 
   // Default fallback set
   return {
-    bgFar: await loadImageAsync("assets/background_layer_1.png"),
-    bgMid: await loadImageAsync("assets/background_layer_2.png"),
-    bgFore: await loadImageAsync("assets/background_layer_3.png"),
+    bgFar: await loadImageAsync("assets/back.jpg"),
+    bgMid: await loadImageAsync("assets/middle.jpg"),
+    bgFore: await loadImageAsync("assets/front.jpg"),
   };
 }
 

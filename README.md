@@ -17,7 +17,7 @@ Sidequest Week 6
 ---
 
 ## Setup and Interaction Instructions
-WASD or arrow keys to move around.
+WASD or arrow keys to move around, space to hit mobs. Rescue all the tiny characters.
 
 ---
 
