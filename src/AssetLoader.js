@@ -49,12 +49,16 @@ export async function loadAssets(levelPkg, tuningDoc) {
   const leafImg = await loadImageAsync("assets/2 Owlet_Monster/Owlet_Monster_Idle_4.png");
   const fireImg = await loadImageAsync("assets/slime_purple.png");
 
-  const groundTileImg = await loadImageAsync("assets/groundTile.png");
-  const groundTileDeepImg = await loadImageAsync("assets/groundTileDeep.png");
-  const platformLCImg = await loadImageAsync("assets/platformLC.png");
-  const platformRCImg = await loadImageAsync("assets/platformRC.png");
-  const wallLImg = await loadImageAsync("assets/wallL.png");
-  const wallRImg = await loadImageAsync("assets/wallR.png");
+  // Extract tiles from oak_woods_tileset (24x24 per tile, 21 cols x 15 rows)
+  const tilesetImg = await loadImageAsync("assets/oak_woods_tileset.png");
+  const TW = 24;
+  const TH = 24;
+  const groundTileImg = extractTile(tilesetImg, 6, 0, TW, TH);      // 7th square, first row
+  const groundTileDeepImg = extractTile(tilesetImg, 1, 1, TW, TH);  // second square, second row
+  const platformLCImg = extractTile(tilesetImg, 5, 0, TW, TH);      // 6th square, first row
+  const platformRCImg = extractTile(tilesetImg, 8, 0, TW, TH);      // 9th square, first row
+  const wallLImg = extractTile(tilesetImg, 0, 2, TW, TH);           // wall left
+  const wallRImg = extractTile(tilesetImg, 3, 1, TW, TH);           // 4th square, second row
 
   const fontImg = await loadImageAsync("assets/bitmapFont.png");
 
@@ -243,6 +247,12 @@ function buildDudeMonsterBoarSheet(imgs) {
 // ------------------------
 // helpers
 // ------------------------
+
+function extractTile(tilesetImg, col, row, tileW, tileH) {
+  const x = col * tileW;
+  const y = row * tileH;
+  return tilesetImg.get(x, y, tileW, tileH);
+}
 
 function loadImageAsync(path) {
   if (!path) {
